@@ -11,14 +11,6 @@ const gameState1: GameState = {
         [5, 6],
     ]
 }
-
-const printAllArrays = (whenStr: string = "default") => {
-    console.log(whenStr)
-    console.log("s1", s1)
-    console.log("s2", s2)
-    console.log("s3", s3)
-}
-
 document.addEventListener('DOMContentLoaded', e => {
     renderToDOM(renderGame(gameState1))
 })
@@ -27,7 +19,6 @@ document.addEventListener('DOMContentLoaded', e => {
 
 
 type GameState = {
-    q
     size: number,
     poles: [
         number[],
@@ -37,12 +28,15 @@ type GameState = {
 }
 // <div class="disc disc-n-${pole.map((disc) => pole[disc])}"></div>
 function renderGame(state: GameState): string {
+    state = changeState({ size: 7, poles: [[], [], [1, 2, 3, 4, 5, 6]] })
+    // state = moveSmally(gameState1)
     return `<div class="poles poles-n-${state.size}">
         ${state.poles.map(pole => renderPole(pole)).join('\n')}
     </div>`
 }
 
 function renderPole(pole: number[]): string {
+    console.log(pole)
     return `<div class="pole">
         ${pole.reverse().map(disc => renderDisc(disc)).join('\n')}
     </div>`
@@ -69,11 +63,9 @@ const moveChildren = (n: number) => {
     }
 
     if (s1[0] > s2[0]) {
-        printAllArrays('prepop')
 
         s1.pop()
         s2.push(child)
-        printAllArrays('post pop ')
 
     }
     if (s1[0] > s3[0]) {
@@ -87,6 +79,35 @@ const moveChildren = (n: number) => {
     return "balh"
 
 }
-console.log(moveChildren(3));
+// console.log(moveChildren(3));
+function moveTriPod(gameState: GameState, fromPole: number, newPole: number): GameState {
+    //TODO check where tripod exists
+    // assuming tripod at pole 1...
+    let i = 0;
+    for (i = 0; i < 0; i++) {
+
+    }
+    const newFromPole = gameState1.poles[fromPole]//.pop().pop().pop()
+    // newPole = 
+    let newPoles: [number[], number[], number[]] = [[], [], []]
+
+    newPoles[fromPole] = newFromPole
+    return {
+        size: 7,
+        poles: newPoles
+    }
+}
+function moveSmally(gameState: GameState, fromPole: number = 0, newPole: number = 2): GameState {
+    let newPoles: [number[], number[], number[]] = [[], [], []]
+    let newGameState: GameState = { ...gameState, poles: [...gameState.poles] }
+    newGameState.poles[fromPole] = newGameState.poles[fromPole].slice(0, 2)
+    newGameState.poles[newPole] = newGameState.poles[newPole].slice(0, 2)
+    console.log(
+        'smalls has landed', newGameState
+    )
+    return newGameState
+}
+function changeState(newGameState: GameState): GameState {
+    return { ...newGameState, poles: [...newGameState.poles] }
+}
 console.log(s3)
-printAllArrays
