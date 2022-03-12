@@ -23,7 +23,6 @@ const moveChildren = (n: number) => {
         return ''
     }
 
-
     if (s1[0] > s2[0]) {
         printAllArrays('prepop')
 
