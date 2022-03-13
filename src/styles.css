@@ -43,6 +43,13 @@ body {
     background: no-repeat center linear-gradient(0deg, tomato 45%, tomato 55%);
     background-size: 10%;
 }
+.pole .number{
+    align-items: center;
+    justify-content: center;
+    color:white;
+    display: flex;
+    flex: auto;
+}
 
 .disc {
     height: var(--disc-height);
