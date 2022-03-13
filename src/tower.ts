@@ -53,7 +53,7 @@ function renderPole(pole: number[], i: number): string {
 }
 
 function renderDisc(disc: number): string {
-    return `<div class="disc disc-n-${disc}">${disc}</div>`
+    return `<div class="disc disc-n-${disc}">${6 - disc}</div>`
 }
 
 function renderToDOM(html: string) {
@@ -97,7 +97,7 @@ async function main() {
     let iSleeps = 0
     function isSolved(state: GameState) {
         //TODO: fill in logic
-        return iSleeps > 100
+        return iSleeps > 300
     }
     document.addEventListener('DOMContentLoaded', async (_e) => {
         changeState(gameState)
@@ -108,7 +108,7 @@ async function main() {
             iSleeps = ++iSleeps
             performNextMove(gameState, i)
             i++
-            await sleep(100)
+            await sleep(200)
 
             //onceSolved
         }
@@ -146,7 +146,25 @@ function getMovesForTripod(target: number, destination: number): moves {
 }
 function getMovesForQuadpod(target: number, destination: number): moves {
     const fillerPole = [0, 1, 2].reduce((pole, cur) => (pole !== target && pole !== destination) ? pole : cur)
-    return [...getMovesForTripod(target, fillerPole), [target, destination], ...getMovesForTripod(fillerPole, destination)]
+    return nPodMoves(target, destination, 4)
+
+    return [
+        ...getMovesForTripod(target, fillerPole),
+        [target, destination],
+        ...getMovesForTripod(fillerPole, destination)
+    ]
+}
+function nPodMoves(target: number, destination: number, n: number): moves {
+    const fillerPole = [0, 1, 2].reduce((pole, cur) => (pole !== target && pole !== destination) ? pole : cur)
+    if (n < 3) { throw Error(`tried to call nPodMoves with n=${n}`) }
+    if (n === 3) {
+        return getMovesForTripod(target, destination)
+    }
+    return [
+        ...nPodMoves(target, fillerPole, n - 1),
+        [target, destination],
+        ...nPodMoves(fillerPole, destination, n - 1)
+    ]
 }
 function performNextMove(state: GameState, moveI: number) {
     //call move based on state
@@ -154,29 +172,12 @@ function performNextMove(state: GameState, moveI: number) {
     console.log('moveI', moveI);
 
 
-    if (true/**if first move  */) {
-        let firstMoves: moves = [
-            //move Tripod
-            ...getMovesForTripod(0, 1),   //[0, 1], [0, 2], [1, 2], [0, 1], [2, 0], [2, 1], [0, 1],
+    let moves: moves = [
+        ...nPodMoves(0, 1, 7),
+    ]
+    console.log('moves.length', moves.length);
 
-            //move 3 biggie
-            [0, 2],
-            ...getMovesForTripod(1, 2),
-
-            //move it's brother 2
-            [0, 1],
-            ...getMovesForTripod(2, 0),
-            [2, 1],
-            ...getMovesForTripod(0, 1),
-
-            //move brother 1
-            ...getMovesForQuadpod(1, 2)
-
-        ]
-        console.log('firstMoves.length', firstMoves.length);
-
-        move(state, firstMoves[moveI][0], firstMoves[moveI][1])
-    }
+    move(state, moves[moveI][0], moves[moveI][1])
 
     // let newState = move(state, 0, 1)
     renderToDOM(renderGame(state))
