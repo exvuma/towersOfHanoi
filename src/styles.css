@@ -48,6 +48,11 @@ body {
     height: var(--disc-height);
     background-color: #555;
     margin: var(--disc-margin) auto;
+    color: white; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 }
 
 .disc-n-0 {
