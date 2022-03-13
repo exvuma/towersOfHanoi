@@ -11,12 +11,46 @@ const gameState1: GameState = {
         [5, 6],
     ]
 }
-document.addEventListener('DOMContentLoaded', e => {
-    renderToDOM(renderGame(gameState1))
+const gameState: GameState = {
+    size: 7,
+    poles: [
+        [0, 3],
+        [1, 2, 4],
+        [5, 6],
+    ]
+}
+document.addEventListener('DOMContentLoaded', _e => {
+    changeState(gameState1)
 })
 
 
+function move(state: GameState, target: number, destination: number): GameState {
+    let poles: GameState['poles'] = [[11], [22], [33]]// fake array
+    let polesM: GameState['poles'] = poles
+    state.poles.forEach((p, i) => {
+        // const poles: GameState['poles'] = [...state.poles.map((p) => {
+        polesM[i] = p.reverse()
+    })
+    // const poles: GameState['poles'] = state.poles.reduce((p, _cur, _curIndex, _arr) => {
+    //     // const poles: GameState['poles'] = [...state.poles.map((p) => {
+    //     console.log("sds", p)
+    //     return [1]////p.reverse()
+    //     // return [...p].reverse()
+    // })
 
+    const targetDisc = poles[target].pop()
+
+    if (!targetDisc) {
+        throw new Error(`Cannot use this pole target ${target}`)
+    }
+
+    poles[destination].push(targetDisc)
+
+    return {
+        ...state,
+        poles,
+    }
+}
 
 type GameState = {
     size: number,
@@ -28,7 +62,6 @@ type GameState = {
 }
 // <div class="disc disc-n-${pole.map((disc) => pole[disc])}"></div>
 function renderGame(state: GameState): string {
-    state = changeState({ size: 7, poles: [[], [], [1, 2, 3, 4, 5, 6]] })
     // state = moveSmally(gameState1)
     return `<div class="poles poles-n-${state.size}">
         ${state.poles.map(pole => renderPole(pole)).join('\n')}
@@ -50,7 +83,7 @@ function renderToDOM(html: string) {
     document.body.innerHTML = html
 }
 
-const moveChildren = (n: number) => {
+const moveChildren = (_n: number) => {
 
     //not logic, just type safety bullshit 
     const child = s1[3]
@@ -80,7 +113,7 @@ const moveChildren = (n: number) => {
 
 }
 // console.log(moveChildren(3));
-function moveTriPod(gameState: GameState, fromPole: number, newPole: number): GameState {
+function moveTriPod(_gameState: GameState, fromPole: number, _newPole: number): GameState {
     //TODO check where tripod exists
     // assuming tripod at pole 1...
     let i = 0;
@@ -107,7 +140,10 @@ function moveSmally(gameState: GameState, fromPole: number = 0, newPole: number 
     )
     return newGameState
 }
-function changeState(newGameState: GameState): GameState {
-    return { ...newGameState, poles: [...newGameState.poles] }
+function changeState(newGameState: GameState) {
+    renderToDOM(renderGame(newGameState))
 }
+
+
 console.log(s3)
+// changeState(move(gameState1, 1, 2))
